@@ -1,40 +1,32 @@
 <div *ngIf="isSubmitted && f.name.errors" class="invalid-feedback">
-  <div *ngIf="f.name.errors.required">** is required</div>
+  <div *ngIf="f.name.errors.required">Name is required</div>
 </div>
 <form class="form-signin" [formGroup]="form" (ngSubmit)="onSubmit()">
   <img class="mb-4 signin-logo">
   <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-  <label for="input-name"
-         class="sr-only">
-       User Name
-  </label>
+  <label for="input-name" class="sr-only">User Name</label>
   <input type="text"
          id="input-name"
          class="form-control"
-         [ngClass]="{ 'is-invalid': isSubmitted && f.name.errors }"
+         [ngClass]="{'is-invalid': isSubmitted && f.name.errors}"
          placeholder="User name"
          required
          autofocus
          formControlName="name">
-  <label for="input-password"
-         class="sr-only">
-       Password
-  </label>
+  <label for="input-password" class="sr-only">Password</label>
   <input type="password"
          id="input-password"
          class="form-control"
-         [ngClass]="{ 'is-invalid': isSubmitted && f.password.errors }"
+         [ngClass]="{'is-invalid': isSubmitted && f.password.errors}"
          placeholder="Password"
          required
          formControlName="password">
   <div class="checkbox mb-3">
     <label>
-      <input type="checkbox"
-             value="remember-me"> Remember me
+      <input type="checkbox" value="remember-me"> Remember me
     </label>
   </div>
-  <button class="btn btn-lg btn-primary btn-block"
-          type="submit">Sign in</button>
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
   <a class="btn btn-lg btn-info btn-block btn-register">Register</a>
   <p class="mt-5 mb-3 text-muted copyright">&copy; 2020-</p>
 </form>
