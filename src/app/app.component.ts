@@ -6,7 +6,6 @@ import { User } from '@app/_models_';
 declare var $: any;
 
 @Component({
-    // selector: 'app-root',
     selector: 'app',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
@@ -24,10 +23,17 @@ export class AppComponent implements OnInit {
         });
     }
 
+    /**
+     * 
+     * @param accountService 
+     */
     constructor(private accountService: AccountService) {
         this.accountService.user.subscribe(x => this.user = x);
     }
 
+    /**
+     * Logout action
+     */
     logout() {
         this.accountService.logout();
     }

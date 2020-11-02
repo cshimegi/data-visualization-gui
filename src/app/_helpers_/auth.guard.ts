@@ -10,10 +10,14 @@ export class AuthGuard implements CanActivate {
         private accountService: AccountService
     ) {}
 
-    canActivate(
-        route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot
-    ): boolean
+    /**
+     * Define user who can be activated
+     * 
+     * @param route 
+     * @param state 
+     * @returns if user can be activated
+     */
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean
     {
         const user = this.accountService.userValue;
         
@@ -23,7 +27,12 @@ export class AuthGuard implements CanActivate {
         }
         
         // not logged in so redirect to login page with the return url
-        this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
+        this.router.navigate(['/login'], {
+            queryParams: {
+                returnUrl: state.url
+            }
+        });
+
         return false;
     }
 }
