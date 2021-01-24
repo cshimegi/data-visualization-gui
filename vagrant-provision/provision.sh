@@ -3,6 +3,11 @@ sudo apt update
 sudo apt install net-tools
 echo "====================End of Updating apt-get========================="
 
+echo "==================Update apt-get================================"
+sudo apt install apache2
+sudo a2enmod rewrite # enable rewrite engine
+echo "====================End of Updating apt-get========================="
+
 cd /vagrant
 
 echo "==================Install required packages================================"
