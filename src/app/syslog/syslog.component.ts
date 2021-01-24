@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ChartService, AccountService, DateService } from '@app/_services_';
 import { UserLog } from '@app/_models_';
 import { map } from 'rxjs/operators';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort, Sort } from '@angular/material/sort';
 
 declare var $: any;
 @Component({
@@ -11,10 +13,11 @@ declare var $: any;
 })
 
 export class SyslogComponent implements OnInit {
-    columns = ['id', 'name', 'authority', 'loggedTime'];
+    @ViewChild('sortTable') sortTable: MatSort;
+    columns = ['id', 'username', 'authority', 'loggedTime'];
     userLogs: UserLog[] = [];
-    sortColumn: string = 'id';
-    order: string = 'asc';
+    userLogDataSource: MatTableDataSource<UserLog>;
+    sort: Sort = {active: '', direction: ''};
 
     constructor(
         private chartServie: ChartService,
@@ -36,8 +39,11 @@ export class SyslogComponent implements OnInit {
                 }))
             ).subscribe(logs => {
                 this.userLogs = logs;
+                this.userLogDataSource = new MatTableDataSource(logs);
+                this.userLogDataSource.sort = this.sortTable;
                 this.drawLineChart();
             });
+            
     }
 
     /**
@@ -86,19 +92,6 @@ export class SyslogComponent implements OnInit {
     }
 
     /**
-     * Sort table data by column name
-     * 
-     * @param columnName 
-     */
-    sortByColumnName(columnName: string): void
-    {
-        $(this.sortColumn).removeClass(this.order);
-        this.sortColumn = columnName;
-        this.order = this.order === 'desc' ? 'asc' : 'desc';
-        $(this.sortColumn).addClass(this.order);
-    }
-
-    /**
      * 
      * @returns results
      */
@@ -112,5 +105,14 @@ export class SyslogComponent implements OnInit {
         });
 
         return this.dateService.countAmountPerDay(data);
+    }
+
+    /**
+     * Sort table data by column name
+     * 
+     * @param sortInfo 
+     */
+    doSort(sortInfo: Sort) {
+        this.sort = sortInfo;
     }
 }
