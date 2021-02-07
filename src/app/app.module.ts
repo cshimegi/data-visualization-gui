@@ -24,6 +24,7 @@ import { OrderBy } from './_pipes_/orderBy.pipe';
 import { Replace } from './_pipes_/replace.pipe';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from '@app/_helpers_';
+import { ErrorComponent } from './error/error.component';
 
 @NgModule({
     declarations: [
@@ -36,7 +37,8 @@ import { TokenInterceptor } from '@app/_helpers_';
         MonitorComponent,
         ScheduleComponent,
         OrderBy,
-        Replace
+        Replace,
+        ErrorComponent
     ],
     imports: [
         BrowserModule,

@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { ChartService, AccountService, DateService } from '@app/_services_';
+import { ChartService, DateService } from '@app/_services_';
 import { UserLog } from '@app/_models_';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { HttpErrorResponse } from '@angular/common/http';
+import { UserRepositoryService } from '@app/_repos_';
 
-declare var $: any;
 @Component({
     selector: 'app-syslog',
     templateUrl: './syslog.component.html',
@@ -27,7 +28,7 @@ export class SyslogComponent implements AfterViewInit, OnInit {
 
     constructor(
         private chartServie: ChartService,
-        private accountService: AccountService,
+        private userRepoService: UserRepositoryService,
         private dateService: DateService
     ) {
         this.currentSort = {
@@ -36,7 +37,7 @@ export class SyslogComponent implements AfterViewInit, OnInit {
         };
         this.currentPage = {
             pageIndex: 0,
-            pageSize: 9,
+            pageSize: 6,
             length: null
         }
         this.fromDate = this.dateService.getUnixDatetime(this.dateService.getStringPastDatetime(30));
@@ -54,6 +55,7 @@ export class SyslogComponent implements AfterViewInit, OnInit {
             this.getLogs();
         });
         this.paginator.page.subscribe((page: PageEvent) => {
+            console.log(page)
             this.currentPage = page;
             this.getLogs();
         });
@@ -66,15 +68,21 @@ export class SyslogComponent implements AfterViewInit, OnInit {
     {
         const params = this.getQueryParams();
 
-        this.accountService.getUserLogs(this.currentPage.pageIndex, params)
-            .subscribe((data: any) => {
-                this.count = data.count;
-                const logs = this.formatResults(data.results);
-                this.loading = false;
-                this.userLogs = logs;
-                this.userLogDataSource = new MatTableDataSource(logs);
-                this.drawLineChart();
-            });
+        this.userRepoService.getUserLogsBy(this.currentPage.pageIndex, params)
+            .subscribe(
+                (data: any) => {
+                    this.count = data.count;
+                    const logs = this.formatResults(data.results);
+                    this.loading = false;
+                    this.userLogs = logs;
+                    this.userLogDataSource = new MatTableDataSource(logs);
+                    this.userLogDataSource.paginator = this.paginator;
+                    this.drawLineChart();
+                },
+                (error: HttpErrorResponse) => {
+                    console.error("Error => ", error);
+                }
+            );
     }
 
     /**
@@ -83,7 +91,7 @@ export class SyslogComponent implements AfterViewInit, OnInit {
     private formatResults(results: any): UserLog[]
     {
         return results.map(log => {
-            log.user.authorityName = this.accountService.getAuthorityName(log.user.authority);
+            log.user.authorityName = log.user.authority == 1 ? 'General' : 'Admin';
             log.loggedTime = log['logged_time'];
 
             delete log['logged_time'];
