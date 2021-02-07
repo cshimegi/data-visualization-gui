@@ -3,6 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { AccountService } from '@app/_services_';
+import { HttpErrorResponse } from '@angular/common/http';
+import { StatusCodes } from 'http-status-codes';
 
 @Component({
     selector: 'app-login',
@@ -16,7 +18,8 @@ export class LoginComponent implements OnInit {
 
     isLoading = false;
     isSubmitted = false;
-  
+    isSubmittedError = false;
+
     constructor (
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
@@ -47,31 +50,30 @@ export class LoginComponent implements OnInit {
      */
     get f() { return this.form.controls; }
 
-    /**
-     * 
-     */
     onSubmit() {
         this.isSubmitted = true;
         this.isLoading = true;
+        this.isSubmittedError = false;
         
-        if (this.form.invalid) return;
+        if (this.form.invalid) {
+            return
+        };
         
         this.accountService.login(this.f.name.value, this.f.password.value)
             .pipe(first())
             .subscribe(
-                data => {
+                (data: any) => {
                     this.router.navigate([this.returnUrl]);
                 },
-                error => {
-                    console.error("Error => ", error);
-                    // this.alertService.error(error);
+                (error: HttpErrorResponse) => {
                     this.isLoading = false;
+
+                    if (error.status === StatusCodes.FORBIDDEN) {
+                        this.isSubmittedError = true;
+                    }
                 });
     }
 
-    /**
-     * 
-     */
     redirectToRegister() {
         this.router.navigate(['/register']);
     }

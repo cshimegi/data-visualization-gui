@@ -4,8 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { AccountService } from '@app/_services_';
 import { comparePassword } from '@app/_helpers_';
-
-declare var $: any;
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'app-register',
@@ -19,6 +18,7 @@ export class RegisterComponent implements OnInit {
 
     isLoading = false;
     isSubmitted = false;
+    isSubmittedError = false;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -70,8 +70,11 @@ export class RegisterComponent implements OnInit {
     onSubmit() {
         this.isSubmitted = true;
         this.isLoading = true;
-        console.log(this.form)
-        if (this.form.invalid) return;
+        this.isSubmittedError = false;
+
+        if (this.form.invalid) {
+            return
+        };
 
         let formData = this.form.getRawValue();
         formData['confirmed_password'] = formData.confirmPassword;
@@ -80,13 +83,13 @@ export class RegisterComponent implements OnInit {
         this.accountService.register(formData)
             .pipe(first())
             .subscribe(
-                data => {
+                (data: any) => {
                     this.router.navigate([this.returnUrl]);
                 },
-                error => {
-                    console.error("Error => ", error);
-                    // this.alertService.error(error);
+                (error: HttpErrorResponse) => {
                     this.isLoading = false;
-                });
+                    this.isSubmittedError = true;
+                }
+            );
     }
 }

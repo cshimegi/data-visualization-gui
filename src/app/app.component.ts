@@ -41,7 +41,7 @@ export class AppComponent implements OnInit {
     /**
      * switch language
      */
-    switchLangyage() {
+    switchLanguage() {
 
     }
 }
