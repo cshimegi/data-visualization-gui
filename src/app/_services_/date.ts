@@ -5,9 +5,9 @@ import * as moment from 'moment';
 
 export class DateService {
 
-    constructor() {}
+    constructor () {}
 
-    countAmountPerDay(data: any): Array<any>
+    countAmountPerDay (data: any): Array<any>
     {
         let recordObj = data.reduce(function (result, datum) {
             const day = moment(datum.datetime).format("YYYY-MM-DD");
@@ -25,19 +25,24 @@ export class DateService {
         return recordArr;
     }
 
-    getUnixDatetime(datetime?: string): number
+    getUnixDatetime (datetime?: string): number
     {
         return moment(datetime).unix();
     }
 
-    getPastDatetime(daysAgo: number): Date
+    getPastDatetime (daysAgo: number): Date
     {
         return moment().add(-daysAgo, 'days').toDate();
     }
 
-    getStringPastDatetime(daysAgo: number): string
+    getStringPastDatetime (daysAgo: number): string
     {
         return this.getPastDatetime(daysAgo).toISOString();
+    }
+
+    formatDatetime (datetime: string|number, formate: string = "YYYY/MM/DD"): string
+    {
+        return moment(datetime).format(formate);
     }
 
 }

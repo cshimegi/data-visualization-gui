@@ -1,0 +1,19 @@
+<div class="monitor-vechain">
+  <ul class="nav nav-tabs">
+    <li class="nav-item shadow">
+      <a class="nav-link active" (mouseover)="showCandleStickWith(1, $event);">1 Min</a>
+    </li>
+    <li class="nav-item shadow">
+      <a class="nav-link" (mouseover)="showCandleStickWith(5, $event);">5 Min</a>
+    </li>
+    <li class="nav-item shadow">
+      <a class="nav-link" (mouseover)="showCandleStickWith(15, $event);">15 Min</a>
+    </li>
+    <li class="nav-item shadow">
+      <a class="nav-link" (mouseover)="showCandleStickWith(60, $event);">1 Hour</a>
+    </li>
+  </ul>
+  <div class="candle-stick">
+    <svg id="candle-stick" class="shadow"></svg>
+  </div>
+</div>
