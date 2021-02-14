@@ -1,0 +1,17 @@
+.nav-link {
+    cursor: pointer;
+    color: black;
+
+    &.active {
+        color: white;
+        background-color: darkseagreen;
+    }
+}
+.nav-tabs {
+    margin-bottom: 20px;
+}
+svg#candle-stick {
+    padding: 10px 10px 10px 10px;
+    border: 1px solid gainsboro;
+    background-color: white;
+}
