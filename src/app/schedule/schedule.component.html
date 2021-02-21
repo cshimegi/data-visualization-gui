@@ -1,1 +1,27 @@
-<p>schedule works!</p>
+<div #external id="external-events" class="shadow">
+  <p class="fc-event-title">
+    <strong>Draggable Events</strong>
+  </p>
+
+  <div *ngFor="let event of events"
+        id="{{event.id}}"
+        class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event">
+    <div class="fc-event-main">{{ event.label }}</div>
+  </div>
+
+  <p class="fc-event-options">
+    <input type="checkbox"
+           id="drop-remove"
+           [checked]="isRemoveChecked"/>
+    <label class="label-drop-remove" for="drop-remove">remove after drop</label>
+  </p>
+</div>
+
+<div id="calendar-container">
+  <full-calendar id="calendar"
+                 class="shadow"
+                 *ngIf="options"
+                 #fullcalendar
+                 [options]="options">
+  </full-calendar>
+</div>

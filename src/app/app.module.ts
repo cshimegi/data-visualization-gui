@@ -9,6 +9,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FullCalendarModule } from '@fullcalendar/angular';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -51,7 +52,8 @@ import { ErrorComponent } from './error/error.component';
         MatSortModule,
         MatPaginatorModule,
         MatProgressSpinnerModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        FullCalendarModule
     ],
     providers: [
         {
