@@ -1,0 +1,29 @@
+#external-events {
+    float: left;
+    z-index: 2;
+    width: 180px;
+    padding: 10px 10px 0px 10px;
+    border: 1px solid #ccc;
+    border-top: 3px deepskyblue solid;
+
+    .fc-event {
+        cursor: move;
+        margin: 3px 0;
+        padding-left: 3px;
+    }
+}
+#calendar-container {
+    position: relative;
+    z-index: 1;
+    margin-left: 200px;
+}
+#calendar {
+    padding: 10px 10px 10px 10px;
+    border-top: 3px deepskyblue solid;
+}
+.fc-event-options {
+    margin-top: 10px;
+}
+.label-drop-remove {
+    margin-left: 5px;
+}
