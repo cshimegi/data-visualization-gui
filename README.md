@@ -8,27 +8,26 @@
 2. [Vagrant 2.2.14](https://www.vagrantup.com/downloads)
 
 ## Installation from scratch
-##### Notification
-If you want to install from scratch, please refer to branch **master**.
-If you just want to look what this App is, please refer to branch **built**.
-
 ##### Steps
 * Step 1
 `git clone https://github.com/cshimegi/analysis-web.git`
 
-* Step 2
+* Step 2 (before using vagrant)
 ```bash
 $  cd /to/Vagrantfile/path
-$  vagrant up --provision
+$  npm install
+$  ng add @angular/material (style should not be a problem but deeppurple-amber is used here)
+$  ng build --prod --output-path dist 
 ```
 
-* Step 3
+* Step 3 (Use Vagrant)
 ```bash
+$  vagrant up --provision
 $  vagrant ssh
 ```
 
-## Access to Django WEB
-After Vagrant is booted, you can access API page from browser.
+## Access to Project via WEB site
+After Vagrant is booted, you can access web page from browser.
 
 `http://192.168.33.10:1299`
 
@@ -37,13 +36,13 @@ After Vagrant is booted, you can access API page from browser.
 ```bash
 $  vagrant up  //  to strat
 $  vagrant up --provision //  to strat and provision
-$  vagrant ssh  //  connect by SSH
+$  vagrant ssh  //  to enter into vagrant
 $  vagrant halt // to halt
 ```
 
 ### Ubuntu (bento/ubuntu-20.10)
 ```bash
 $  cd /vagrant // go to project directory
-$  ng serve --host='192.168.33.10' --port=1299 // serve Angular
-$  ng serve --host='192.168.33.10' --port=1299 --poll=5000 // serve Angular and sync local file
+$  ng serve --host='192.168.33.10' --port=1299 // serve Angular at dev env
+$  ng serve --host='192.168.33.10' --port=1299 --poll=5000 // serve Angular and sync local file at dev env
 ```
