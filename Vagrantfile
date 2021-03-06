@@ -76,8 +76,4 @@ Vagrant.configure("2") do |config|
   #   apt-get install -y apache2
   # SHELL
   config.vm.provision :shell, :privileged => false, :path => "vagrant-provision/provision.sh"
-
-  if Vagrant::Util::Platform.windows? then
-    config.vm.provision :shell, :privileged => false, :path => "vagrant-provision/provision-windows.sh"
-  end
 end
