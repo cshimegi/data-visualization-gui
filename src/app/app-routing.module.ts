@@ -10,7 +10,7 @@ import { AboutComponent } from '@app/about';
 import { ScheduleComponent } from '@app/schedule';
 import { VechainComponent } from '@app/vechain';
 import { SyslogComponent } from '@app/syslog';
-import { ScrapyComponent } from '@app/scrapy';
+// import { ScrapyComponent } from '@app/scrapy';
 
 const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -20,7 +20,7 @@ const routes: Routes = [
     { path: 'about', component: AboutComponent, canActivate: [AuthGuard] },
     { path: 'schedule', component: ScheduleComponent, canActivate: [AuthGuard] },
     { path: 'vechain', component: VechainComponent, canActivate: [AuthGuard] },
-    { path: 'scrapy', component: ScrapyComponent, canActivate: [AuthGuard] },
+    // { path: 'scrapy', component: ScrapyComponent, canActivate: [AuthGuard] },
     { path: 'log', component: SyslogComponent, canActivate: [AuthGuard] },
     // otherwise redirect to dashboard
     { path: '**', redirectTo: '' }

@@ -17,13 +17,13 @@ import { SyslogComponent } from './syslog/syslog.component';
 import { AboutComponent } from './about/about.component';
 import { ScheduleComponent } from './schedule/schedule.component';
 import { VechainComponent } from './vechain/vechain.component';
-import { ScrapyComponent } from './scrapy/scrapy.component';
+// import { ScrapyComponent } from './scrapy/scrapy.component';
 
 import { OrderBy } from './_pipes_/orderBy.pipe';
 import { Replace } from './_pipes_/replace.pipe';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from '@app/_helpers_';
-import { ErrorComponent } from './error/error.component';
+// import { ErrorComponent } from './error/error.component';
 import { CalendarComponent } from '@app/dialogs';
 
 @NgModule({
@@ -38,8 +38,8 @@ import { CalendarComponent } from '@app/dialogs';
         ScheduleComponent,
         OrderBy,
         Replace,
-        ErrorComponent,
-        ScrapyComponent,
+        // ErrorComponent,
+        // ScrapyComponent,
         CalendarComponent
     ],
     imports: [
