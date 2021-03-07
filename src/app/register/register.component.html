@@ -8,7 +8,7 @@
   </div>
   <table class="form-item" [ngClass]="{'confirmPasswordError': isSubmitted && f.confirmPassword.errors}">
     <tbody class="form-body">
-      <tr class="user" [ngClass]="{'invalid': isSubmitted && f.name.errors}">
+      <tr class="user" [ngClass]="{'invalid': isSubmitted && f.username.errors}">
         <td>
           <span class="user-icon"></span>
         </td>
@@ -16,24 +16,24 @@
           <input type="text"
               id="input-name"
               class="form-control user"
-              [ngClass]="{'is-invalid': isSubmitted && f.name.errors}"
+              [ngClass]="{'is-invalid': isSubmitted && f.username.errors}"
               placeholder="User name"
               required
               autofocus
-              formControlName="name">
+              formControlName="username">
         </td>
       </tr>
-      <tr *ngIf="isSubmitted && f.name.errors">
+      <tr *ngIf="isSubmitted && f.username.errors">
         <td colspan="2">
           <div class="register-name-invalid">
-            <span class="text-danger" *ngIf="f.name.errors.required">Name is required<br></span>
-            <span class="text-danger" *ngIf="f.name.errors.minlength">
-              At least {{f.name.errors.minlength.requiredLength}} characters required<br>
+            <span class="text-danger" *ngIf="f.username.errors.required">Name is required<br></span>
+            <span class="text-danger" *ngIf="f.username.errors.minlength">
+              At least {{f.username.errors.minlength.requiredLength}} characters required<br>
             </span>
-            <span class="text-danger" *ngIf="f.name.errors.maxlength">
-              At most {{f.name.errors.maxlength.requiredLength}} characters are supported<br>
+            <span class="text-danger" *ngIf="f.username.errors.maxlength">
+              At most {{f.username.errors.maxlength.requiredLength}} characters are supported<br>
             </span>
-            <span class="text-danger" *ngIf="f.name.errors.pattern">
+            <span class="text-danger" *ngIf="f.username.errors.pattern">
               Only alphabet, numbers, hyphen and underscore are supported
             </span>
           </div>
