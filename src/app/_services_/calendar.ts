@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CalendarEvent, CalendarTriage, CalendarRemindMinutes } from '@app/_models_';
+import { CalendarEvent, CalendarTriage, CalendarRemindMinute } from '@app/_models_';
 
 
 @Injectable({ providedIn: 'root' })
@@ -14,12 +14,13 @@ export class CalenderService {
         { id: 6, label: "Family" }
     ];
     private readonly triages: Array<CalendarTriage> = [
-        { id: 1, label: "Red" },
-        { id: 2, label: "Orange" },
-        { id: 3, label: "Green" },
-        { id: 4, label: "Black" }
+        { id: 1, label: "Very high", color: "red" },
+        { id: 2, label: "High", color: "orange" },
+        { id: 3, label: "Normal", color: "#3788d8" },
+        { id: 4, label: "Low", color: "yellow" },
+        { id: 5, label: "Very low", color: "green" }
     ];
-    private readonly remindMinutes: Array<CalendarRemindMinutes> = [
+    private readonly remindMinutes: Array<CalendarRemindMinute> = [
         { id: 0, label: "No Remind" },
         { id: 10, label: "10 Minutes" },
         { id: 15, label: "15 Minutes" },
@@ -28,7 +29,7 @@ export class CalenderService {
         { id: 60, label: "60 Minutes" }
     ];
 
-    constructor(
+    constructor (
     ) {}
 
     getDefaultEvents (): Array<CalendarEvent>
@@ -36,18 +37,37 @@ export class CalenderService {
         return this.defaultEvents;
     }
 
+    getDefaultTriage (): CalendarTriage
+    {
+        return this.triages[2]; // normal
+    }
+
     getTriages (): Array<CalendarTriage>
     {
         return this.triages;
     }
 
-    getRemindMinutes (): Array<CalendarRemindMinutes>
+    getDefaultRemindMinute (): CalendarRemindMinute
+    {
+        return this.remindMinutes[0];
+    }
+
+    getRemindMinutes (): Array<CalendarRemindMinute>
     {
         return this.remindMinutes;
     }
-
-    private Handle403()
+    
+    getTriageColor (triageId: number): string
     {
-        
+        const target = this.triages.filter(triage => triage.id === triageId)[0];
+
+        return target ? target.color : '';
+    }
+
+    getRemindMinutesLabel (remindMinutesId: number): string
+    {
+        const target = this.remindMinutes.filter(rm => rm.id === remindMinutesId)[0];
+
+        return target ? target.label : '';
     }
 }
