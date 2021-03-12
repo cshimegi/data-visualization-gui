@@ -49,9 +49,7 @@ export class CalendarRepositoryService extends BaseRepositoryService {
      */
     createCalendar (params: any)
     {
-        const options = {
-            params: params
-        };
+        const options = params;
 
         return this.post(this.calendarRepo, options);
     }

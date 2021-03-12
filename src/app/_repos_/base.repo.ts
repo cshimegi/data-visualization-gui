@@ -56,7 +56,7 @@ export class BaseRepositoryService {
      */
     protected post(repo: string, options: any)
     {
-        return this.http.post<any>(this.rest_api_server + repo, options);
+        return this.http.post<any>(this.rest_api_server + repo + '/', options);
     }
     
     /**
