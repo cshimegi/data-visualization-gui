@@ -6,6 +6,7 @@ import { environment } from '@environments/environment';
 
 export class BaseRepositoryService {
     private rest_api_server = environment.apiUrl + '/';
+    protected repo: string;
 
     constructor(
         protected http: HttpClient
@@ -14,86 +15,79 @@ export class BaseRepositoryService {
     /**
      * Get all
      * 
-     * @param repo
      * @returns Error|any
      */
-    protected getAll(repo: string)
+    getAll()
     {
-        return this.http.get<any>(this.rest_api_server + repo);
+        return this.http.get<any>(this.rest_api_server + this.repo);
     }
 
     /**
      * Get by conditions
      * 
-     * @param repo
      * @param options
      * @returns Error|any
      */
-    protected getBy(repo: string, options: any)
+    getBy(options: any)
     {
-        return this.http.get<any>(this.rest_api_server + repo, options);
+        return this.http.get<any>(this.rest_api_server + this.repo, options);
     }
 
     /**
      * Get by id
      * 
-     * @param repo
      * @param id
      * @param options
      * @returns Error|any
      */
-    protected getById(repo: string, id: number, options: any)
+    getById(id: number, options: any)
     {
-        return this.http.get<any>(this.rest_api_server + repo + `/${id}`, options);
+        return this.http.get<any>(this.rest_api_server + this.repo + `/${id}`, options);
     }
 
     /**
      * Post action
      * 
-     * @param repo
      * @param options
      * @returns Error|any
      */
-    protected post(repo: string, options: any)
+    post(options: any)
     {
-        return this.http.post<any>(this.rest_api_server + repo + '/', options);
+        return this.http.post<any>(this.rest_api_server + this.repo + '/', options);
     }
     
     /**
      * Update by id
      * 
-     * @param repo
      * @param id
      * @param options
      * @returns Error|any
      */
-    protected updateById(repo: string, id: number, options: any)
+    updateById(id: number, options: any)
     {
-        return this.http.put<any>(this.rest_api_server + repo + `/${id}`, options);
+        return this.http.put<any>(this.rest_api_server + this.repo + `/${id}`, options);
     }
 
     /**
      * Partially update by id
      * 
-     * @param repo
      * @param id
      * @param options
      * @returns Error|any
      */
-    protected partialUpdateById(repo: string, id: number, options: any)
+    partialUpdateById(id: number, options: any)
     {
-        return this.http.patch<any>(this.rest_api_server + repo + `/${id}`, options);
+        return this.http.patch<any>(this.rest_api_server + this.repo + `/${id}`, options);
     }
 
     /**
      * Delete by id
      * 
-     * @param repo
      * @param options
      * @returns Error|any
      */
-    protected deleteById(repo: string, id: number)
+    deleteById(id: number)
     {
-        return this.http.delete<any>(this.rest_api_server + repo + `/${id}`);
+        return this.http.delete<any>(this.rest_api_server + this.repo + `/${id}`);
     }
 }

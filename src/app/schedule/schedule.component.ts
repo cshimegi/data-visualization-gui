@@ -7,7 +7,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import ja from '@fullcalendar/core/locales/ja';
 import zhTw from '@fullcalendar/core/locales/zh-tw';
 import { CalendarRepositoryService } from '@app/_repos_';
-import { Calendar, CalendarEvent, CalendarTriage, CalendarRemindMinute } from '@app/_models_';
+import { Calendar, CalendarEvent } from '@app/_models_';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { CalendarComponent } from '@app/dialogs';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -26,8 +26,7 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
     options: any;
     events: Array<CalendarEvent>;
     private registedEvents: Array<any> = [];
-    private defaultTriage: CalendarTriage;
-    private defaultRemindMinute: CalendarRemindMinute;
+    private dateFormat: string = 'YYYY-MM-DD';
 
     constructor (
         private dateService: DateService,
@@ -40,8 +39,6 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
     ngOnInit ()
     {
         this.events = this.calendarService.getDefaultEvents();
-        this.defaultTriage = this.calendarService.getDefaultTriage();
-        this.defaultRemindMinute = this.calendarService.getDefaultRemindMinute();
         this.getRegistedEvents();
     }
 
@@ -50,9 +47,11 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
         this.initDraggableMenus();
     }
 
+    /**
+     * Initialize Full-Calendar options
+     */
     private initFullCalendarOptions (): void
     {
-        console.log(this.registedEvents)
         this.options = {
             // themeSystem: 'bootstrap',
             customButtons: {
@@ -83,6 +82,9 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
         };
     }
 
+    /**
+     * Initialize draggle menus
+     */
     private initDraggableMenus (): void
     {
         new Draggable(this.external.nativeElement, {
@@ -102,7 +104,7 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
      */
     getRegistedEvents ()
     {
-        const calendarObservable = this.calendarRepoService.getAllCalendars();
+        const calendarObservable = this.calendarRepoService.getAll();
         const calendarObserver = {
             next: (data: any) => {
                 this.registedEvents = this.formatCalendar(data);
@@ -117,44 +119,105 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
         calendarObservable.subscribe(calendarObserver);
     }
 
+    /**
+     * Format registered events
+     * 
+     * @param results
+     * @return All Full-Calendar events
+     */
     private formatCalendar (results: any): Array<any>
     {
-        const DATE_FORMAT = 'YYYY-MM-DD';
-
-        return results.map((result) => {
-            const start = this.dateService.formatDatetime(result['from_time'] * 1000, DATE_FORMAT);
-            const end = result['to_time']
-                ? this.dateService.formatDatetime(result['to_time'] * 1000, DATE_FORMAT)
-                : start;
-            const backgroundColor = this.calendarService.getTriageColor(result.triage);
-
-            return {
-                id: result.id,
-                title: result.label,
-                start: start,
-                end: end,
-                backgroundColor: backgroundColor,
-                extendedProps: {
-                    detail: result.detail,
-                    doRemind: result['do_remind'],
-                    remindMinutes: result['remind_minutes']
-                }
-            };
-        });
+        return results.map((result) => this.mapToCalendarEvent(result));
     }
 
+    /**
+     * Map to registed event to Full-Calendar event
+     * 
+     * @param data
+     * @return a registerd Full-Calendar event
+     */
+    private mapToCalendarEvent (data: any): any
+    {
+        const start = this.dateService.formatDatetime(data['from_time'] * 1000, this.dateFormat);
+        const end = data['to_time']
+            ? this.dateService.formatDatetime(data['to_time'] * 1000,this.dateFormat)
+            : start;
+        const color = this.calendarService.getTriageColor(data.triage);
+
+        return {
+            id: data.id,
+            title: data.label,
+            start: start,
+            end: end,
+            backgroundColor: color,
+            borderColor: color,
+            extendedProps: {
+                detail: data.detail,
+                triage: data.triage,
+                doRemind: data['do_remind'],
+                remindMinutes: data['remind_minutes']
+            }
+        };
+    }
+
+    /**
+     * New event dialog
+     */
     private newEventDialog (): void
+    {
+        const data = {
+            title: 'New Event',
+            message: 'Create a new event',
+            isCreate: true,
+            isSubmitButton: true,
+            isCloseButton: true,
+            button: {
+                onSubmitText: 'Create',
+                onCloseText: 'Close'
+            },
+            addEventCallback: this.addEventToCalendar.bind(this)
+        };
+
+        this.openDialog(data);
+    }
+
+    /**
+     * Open dialog for selected event
+     * 
+     * @param data
+     */
+    private openSelectedEventDialog (event: any): void
+    {
+        const data = {
+            title: 'Registered event',
+            message: 'Update it if necessary',
+            event: event,
+            isCreate: false,
+            isSubmitButton: true,
+            isDeleteButton: true,
+            isCloseButton: true,
+            button: {
+                onSubmitText: 'Update',
+                onDeleteText: 'Delete',
+                onCloseText: 'Close'
+            },
+            updateEventCallback: () => {},
+            deleteEventCallback: this.removeEventToCalendar.bind(this)
+        };
+
+        this.openDialog(data);
+    }
+
+    /**
+     * Open dialog for new event creation
+     * 
+     * @param data
+     */
+    private openDialog (data: any): void
     {
         let dialogConfig = new MatDialogConfig();
         dialogConfig.width = '350px';
-        dialogConfig.data = {
-            title: "New Event",
-            message: "Go ahead to create a new event",
-            button: {
-                onSubmitText: "Create",
-                onCloseText: "Close"
-            }
-        };
+        dialogConfig.data = data;
         // dialogConfig.direction = 'rtl';
         this.matDialog.open(CalendarComponent, dialogConfig);
     }
@@ -177,10 +240,7 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
      */
     handleEventResize (eventInfo): void
     {
-        const params = this.processCalendarParams(eventInfo);
-        const results = this.calendarRepoService.createCalendar(params);
-
-        console.log(results);
+        this.doCreation(eventInfo);
     }
 
     /**
@@ -190,7 +250,29 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
      */
     handleEventClick (eventInfo): void
     {
-        console.log('EventClick', eventInfo)
+        const event = this.formatSelectedEventParams(eventInfo);
+        this.openSelectedEventDialog(event);
+    }
+
+    /**
+     * Format selected event params
+     * 
+     * @param eventInfo
+     */
+    private formatSelectedEventParams (eventInfo): any
+    {
+        const event = eventInfo.event;
+
+        return {
+            id: event.id,
+            label: event.title,
+            detail: event.extendedProps.detail,
+            triage: event.extendedProps.triage,
+            doRemind: event.extendedProps.doRemind,
+            remindMinutes: event.extendedProps.remindMinutes,
+            fromTime: event.start,
+            toTime: event.end ?? event.start
+        };
     }
 
     /**
@@ -200,10 +282,7 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
      */
     handleEventDrop (eventInfo): void
     {
-        const params = this.processCalendarParams(eventInfo);
-        const results = this.calendarRepoService.createCalendar(params);
-
-        console.log(results);
+        this.doCreation(eventInfo);
     }
 
     /**
@@ -213,23 +292,17 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
      */
     handleEventReceive (eventInfo): void
     {
-        const params = this.processCalendarParams(eventInfo);
-        console.log(params)
-        this.calendarRepoService.createCalendar(params)
-            .subscribe(
-                (data: any) => {
-                    console.log(data)
-                },
-                (error: HttpErrorResponse) => {
-                    console.error("Error => ", error);
-                }
-            );
-        
-        
+        this.doCreation(eventInfo);
         this.removeEventAfterDrop(eventInfo);
     }
 
-    private processCalendarParams (eventInfo): Calendar
+    /**
+     * Process params for creation
+     * 
+     * @param eventInfo
+     * @return Calendar
+     */
+    private processCreateParams (eventInfo: any): Calendar
     {
         const label = eventInfo.event.title;
         let startDate = eventInfo.event.start;
@@ -241,7 +314,7 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
             ? this.dateService.getUnixDatetime(endDate)
             : 0;
 
-        return this.getCalendarParams({
+        return this.calendarService.formatParams({
             label: label,
             fromTime: startDate,
             toTime: endDate
@@ -262,16 +335,52 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
         // }
     }
 
-    private getCalendarParams (data: any): Calendar
+    /**
+     * Request server to create an event
+     * 
+     * @param eventInfo
+     */
+    private doCreation (eventInfo): void
     {
-        return {
-            label: data.label,
-            detail: data.detail ?? "",
-            triage: data.triage ?? this.defaultTriage.id,
-            do_remind: data.doRemind ?? false,
-            remind_minutes: data.remindMinutes ?? this.defaultRemindMinute.id,
-            from_time: data.fromTime,
-            to_time: data.toTime
+        const params = this.processCreateParams(eventInfo);
+        const calendarObservable = this.calendarRepoService.createCalendar(params);
+        const calendarObserver = {
+            next: (data: any) => {
+                // ToDo: do something but not call addEventToCalendar
+                // since it will be added by full-calendar itself
+            },
+            error: (error: HttpErrorResponse) => {
+                // show error message and remove event from calendar due to fail
+                console.error("Error => ", error);
+            },
+            complete: () => {}
         };
+        
+        calendarObservable.subscribe(calendarObserver);
+    }
+
+    /**
+     * Add new registered event from dialog to calender without loading
+     * 
+     * @param newEvent
+     */
+    addEventToCalendar (newEvent: any): void
+    {
+        const event = this.mapToCalendarEvent(newEvent);
+
+        this.fullcalendar.getApi()
+            .addEvent(event);
+    }
+
+    /**
+     * Remove an deleted event from calendar without loading
+     * 
+     * @param eventId
+     */
+    removeEventToCalendar (eventId: string): void
+    {
+        this.fullcalendar.getApi()
+            .getEventById(eventId)
+            .remove();
     }
 }

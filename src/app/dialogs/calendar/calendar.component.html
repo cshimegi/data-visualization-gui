@@ -6,7 +6,7 @@
     <mat-form-field appearance="fill">
       <mat-label>Choose One Label</mat-label>
       <mat-select formControlName="label">
-        <mat-option *ngFor="let el of eventLabels" [value]="el.id">
+        <mat-option *ngFor="let el of eventLabels" [value]="el.label">
           {{ el.label }}
         </mat-option>
       </mat-select>
@@ -55,10 +55,26 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button class="shadow" mat-raised-button color="primary" (click)="onSubmit()">
+  <button *ngIf="data.isSubmitButton"
+          class="shadow"
+          mat-raised-button
+          color="primary"
+          (click)="onSubmit()"
+          [disabled]="!form.valid">
     {{ data.button.onSubmitText }}
   </button>
-  <button class="shadow" mat-raised-button (click)="onClose()">
+  <button *ngIf="isDeleteButton"
+          class="shadow"
+          mat-raised-button
+          color="warn"
+          (click)="onDelete()"
+          [disabled]="!form.valid">
+    {{ data.button.onDeleteText }}
+  </button>
+  <button *ngIf="data.isCloseButton"
+          class="shadow"
+          mat-raised-button
+          (click)="onClose()">
     {{ data.button.onCloseText }}
   </button>
 </mat-dialog-actions>
