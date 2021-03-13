@@ -6,24 +6,12 @@ import { HttpClient } from '@angular/common/http';
 @Injectable({ providedIn: 'root' })
 
 export class CalendarRepositoryService extends BaseRepositoryService {
-    private calendarRepo = 'calendar';
+    protected repo = 'calendar';
 
     constructor(
         protected http: HttpClient
     ) {
         super(http);
-    }
-
-    /**
-     * Get all calendars
-     * 
-     * @param repo
-     * @param options
-     * @returns Error|any
-     */
-    getAllCalendars()
-    {
-        return this.getAll(this.calendarRepo);
     }
 
     /**
@@ -38,7 +26,7 @@ export class CalendarRepositoryService extends BaseRepositoryService {
             params: params
         };
         
-        return this.getBy(this.calendarRepo, options);
+        return this.getBy(options);
     }
 
     /**
@@ -51,6 +39,6 @@ export class CalendarRepositoryService extends BaseRepositoryService {
     {
         const options = params;
 
-        return this.post(this.calendarRepo, options);
+        return this.post(options);
     }
 }

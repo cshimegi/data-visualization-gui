@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
-import { CalendarEvent, CalendarTriage, CalendarRemindMinute } from '@app/_models_';
+import {
+    CalendarEvent,
+    CalendarTriage,
+    CalendarRemindMinute,
+    Calendar
+} from '@app/_models_';
 
 
 @Injectable({ providedIn: 'root' })
@@ -17,7 +22,7 @@ export class CalenderService {
         { id: 1, label: "Very high", color: "red" },
         { id: 2, label: "High", color: "orange" },
         { id: 3, label: "Normal", color: "#3788d8" },
-        { id: 4, label: "Low", color: "yellow" },
+        { id: 4, label: "Low", color: "#FFD700" },
         { id: 5, label: "Very low", color: "green" }
     ];
     private readonly remindMinutes: Array<CalendarRemindMinute> = [
@@ -69,5 +74,18 @@ export class CalenderService {
         const target = this.remindMinutes.filter(rm => rm.id === remindMinutesId)[0];
 
         return target ? target.label : '';
+    }
+
+    formatParams (data: any): Calendar
+    {
+        return {
+            label: data.label ?? "",
+            detail: data.detail ?? "",
+            triage: data.triage ?? this.getDefaultTriage().id,
+            do_remind: data.doRemind ?? false,
+            remind_minutes: data.remindMinutes ?? this.getDefaultRemindMinute().id,
+            from_time: data.fromTime ?? 0,
+            to_time: data.toTime ?? 0
+        };
     }
 }

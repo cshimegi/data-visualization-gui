@@ -5,7 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { HttpErrorResponse } from '@angular/common/http';
-import { UserRepositoryService } from '@app/_repos_';
+import { UserRepositoryService, UserLogRepositoryService } from '@app/_repos_';
 
 @Component({
     selector: 'app-syslog',
@@ -29,6 +29,7 @@ export class SyslogComponent implements AfterViewInit, OnInit {
     constructor(
         private barChartServie: BarChartService,
         private userRepoService: UserRepositoryService,
+        private userLogRepoService: UserLogRepositoryService,
         private dateService: DateService
     ) {
         this.currentSort = {
@@ -67,7 +68,7 @@ export class SyslogComponent implements AfterViewInit, OnInit {
     {
         const params = this.getQueryParams();
 
-        this.userRepoService.getUserLogsBy(this.currentPage.pageIndex, params)
+        this.userLogRepoService.getUserLogsBy(this.currentPage.pageIndex, params)
             .subscribe(
                 (data: any) => {
                     this.count = data.count;

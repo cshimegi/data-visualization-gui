@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BaseRepositoryService } from './base.repo';
 import { HttpClient } from '@angular/common/http';
+import { BaseRepositoryService } from './base.repo';
 
 
 @Injectable({ providedIn: 'root' })
 
-export class VechainRepositoryService extends BaseRepositoryService {
-    protected repo = 'vechain';
+export class UserLogRepositoryService extends BaseRepositoryService {
+    protected repo = 'user_log';
 
     constructor(
         protected http: HttpClient
@@ -15,15 +15,17 @@ export class VechainRepositoryService extends BaseRepositoryService {
     }
 
     /**
-     * Get vechain By conditions
+     * Get user logs By page index and conditions
      * 
+     * @param pageIndex
      * @param params
      * @returns Error|any
      */
-    getVechainBy(params: any)
+    getUserLogsBy(pageIndex: number, params: any)
     {
         const options = {
-            params: params
+            params: params,
+            page: pageIndex + 1
         };
         
         return this.getBy(options);
